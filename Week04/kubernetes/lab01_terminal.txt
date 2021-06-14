@@ -1,0 +1,151 @@
+Script started on Mon Jun 14 15:35:57 2021
+Restored session: Mon Jun 14 15:33:05 EDT 2021                                                                                                                              
+ 
+]7;file://Macaroni.local/Users/luisherre/Documents/SmoothStack/Week04/kubernetes
+luisherre@Macaroni kubernetes % kubectl get pods
+
+NAME     READY   STATUS             RESTARTS   AGE
+redis    1/1     Running            0          17m
+redis1   0/1     ImagePullBackOff   0          17m
+
+------------------------------------------------------------------------------------------------     
+
+Luis: There are two pods present, redis and redis1. Only redis is running as redis1 has an error.
+      redis1 is not running because the image specified for that pod does not exist.                                                                            
+ 
+-------------------------------------------------------------------------------------------------
+
+]7;file://Macaroni.local/Users/luisherre/Documents/SmoothStack/Week04/kubernetes
+luisherre@Macaroni kubernetes % kubectl describe pod redis
+
+Name:         redis
+Namespace:    default
+Priority:     0
+Node:         tartarus-control-plane/172.18.0.2
+Start Time:   Mon, 14 Jun 2021 15:18:54 -0400
+Labels:       run=redis
+Annotations:  <none>
+Status:       Running
+IP:           10.244.0.9
+IPs:
+  IP:  10.244.0.9
+Containers:
+  redis:
+    Container ID:   containerd://4ba1473381301a77e937ce1d7d227c6bae0d2ae567349908bc8ceeb16f2aa1d5
+    Image:          redis
+    Image ID:       docker.io/library/redis@sha256:7e2c6181ad5c425443b56c7c73a9cd6df24a122345847d1ea9bb86a5afc76325
+    Port:           <none>
+    Host Port:      <none>
+    State:          Running
+      Started:      Mon, 14 Jun 2021 15:18:56 -0400
+    Ready:          True
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-qlr5d (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             True 
+  ContainersReady   True 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-qlr5d:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type    Reason     Age   From               Message
+  ----    ------     ----  ----               -------
+  Normal  Scheduled  17m   default-scheduler  Successfully assigned default/redis to tartarus-control-plane
+  Normal  Pulling    17m   kubelet            Pulling image "redis"
+  Normal  Pulled     17m   kubelet            Successfully pulled image "redis" in 1.4550318s
+  Normal  Created    17m   kubelet            Created container redis
+  Normal  Started    17m   kubelet            Started container redis
+
+----------------------------------------------------------------------------------------------------------
+
+Luis: redis is using image redis. It is running on node tartarus-control-plane/172.18.0.2.
+      The IP of the pod is 10.244.0.9
+
+----------------------------------------------------------------------------------------------------------
+ 
+]7;file://Macaroni.local/Users/luisherre/Documents/SmoothStack/Week04/kubernetes
+luisherre@Macaroni kubernetes % kubectl describe pod redis1
+
+Name:         redis1
+Namespace:    default
+Priority:     0
+Node:         tartarus-control-plane/172.18.0.2
+Start Time:   Mon, 14 Jun 2021 15:19:01 -0400
+Labels:       run=redis1
+Annotations:  <none>
+Status:       Pending
+IP:           10.244.0.10
+IPs:
+  IP:  10.244.0.10
+Containers:
+  redis1:
+    Container ID:   
+    Image:          redis:78.0
+    Image ID:       
+    Port:           <none>
+    Host Port:      <none>
+    State:          Waiting
+      Reason:       ImagePullBackOff
+    Ready:          False
+    Restart Count:  0
+    Environment:    <none>
+    Mounts:
+      /var/run/secrets/kubernetes.io/serviceaccount from kube-api-access-cb24z (ro)
+Conditions:
+  Type              Status
+  Initialized       True 
+  Ready             False 
+  ContainersReady   False 
+  PodScheduled      True 
+Volumes:
+  kube-api-access-cb24z:
+    Type:                    Projected (a volume that contains injected data from multiple sources)
+    TokenExpirationSeconds:  3607
+    ConfigMapName:           kube-root-ca.crt
+    ConfigMapOptional:       <nil>
+    DownwardAPI:             true
+QoS Class:                   BestEffort
+Node-Selectors:              <none>
+Tolerations:                 node.kubernetes.io/not-ready:NoExecute op=Exists for 300s
+                             node.kubernetes.io/unreachable:NoExecute op=Exists for 300s
+Events:
+  Type     Reason     Age                   From               Message
+  ----     ------     ----                  ----               -------
+  Normal   Scheduled  17m                   default-scheduler  Successfully assigned default/redis1 to tartarus-control-plane
+  Normal   Pulling    16m (x4 over 17m)     kubelet            Pulling image "redis:78.0"
+  Warning  Failed     16m (x4 over 17m)     kubelet            Failed to pull image "redis:78.0": rpc error: code = NotFound desc = failed to pull and unpack image "docker.io/library/redis:78.0": failed to resolve reference "docker.io/library/redis:78.0": docker.io/library/redis:78.0: not found
+  Warning  Failed     16m (x4 over 17m)     kubelet            Error: ErrImagePull
+  Warning  Failed     15m (x6 over 17m)     kubelet            Error: ImagePullBackOff
+  Normal   BackOff    2m41s (x64 over 17m)  kubelet            Back-off pulling image "redis:78.0"
+
+------------------------------------------------------------------------------------------------
+
+Luis: redis1 is using image redis:78.0. This image does not exeist in dockerhub. Therefore,
+      the pod cannot run and stays in an error state until an existing image is specified.
+      It is running on node tartarus-control-plane/172.18.0.2.
+      The IP of the pod is never assigned because the pod cannot be properly created without
+      a proper image.
+
+------------------------------------------------------------------------------------------------
+ 
+]7;file://Macaroni.local/Users/luisherre/Documents/SmoothStack/Week04/kubernetes
+luisherre@Macaroni kubernetes % 
+
+Saving session...
+...saving history...truncating history files...
+...completed.
+
+Script done on Mon Jun 14 15:36:49 2021

@@ -136,8 +136,7 @@ Events:
 Luis: redis1 is using image redis:78.0. This image does not exeist in dockerhub. Therefore,
       the pod cannot run and stays in an error state until an existing image is specified.
       It is running on node tartarus-control-plane/172.18.0.2.
-      The IP of the pod is never assigned because the pod cannot be properly created without
-      a proper image.
+      The IP of the pod is 10.244.0.10
 
 ------------------------------------------------------------------------------------------------
  

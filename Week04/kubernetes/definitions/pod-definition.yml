@@ -1,0 +1,14 @@
+# required
+apiVersion: v1
+kind: Pod
+metadata:
+  # not required self defined dictionary
+  name: myapp-pod
+  labels:
+    app: myapp
+    type: front-end
+spec:
+  containers:
+    - name: nginx
+      image: nginx
+# to create: kubectl apply -f pod-definition.yml
